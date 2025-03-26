@@ -27,7 +27,7 @@ import pandas as pd
 from fuzzy_df.match import fuzz_match
 
 comp_left = pd.Series(["apple", "banana", "cherry"])
-comp_right = pd.Series(["apples", "bananas", "grape"])
+comp_right = pd.Series(["apples", "grape", "bananas", "apple"])
 
 matches = fuzz_match(comp_left, comp_right, score_cutoff=70)
 print(matches)
@@ -36,9 +36,11 @@ print(matches)
 **Output:**
 
 ```
-    left_index  right_index  score
-0           0            0   90.0
-1           1            1   85.0
+   left_index  right_index       score
+0           0            0   90.909088
+1           0            3  100.000000
+2           1            2   92.307693
+
 ```
 
 ### Fuzzy Merging
@@ -49,11 +51,24 @@ Use the `fuzz_merge` function to merge two pandas DataFrames or Series based on 
 import pandas as pd
 from fuzzy_df.merge import fuzz_merge
 
-left = pd.DataFrame({"id": [1, 2], "name": ["apple", "banana"]})
-right = pd.DataFrame({"id": [3, 4], "name": ["apples", "bananas"]})
+left = pd.DataFrame(
+   {"id_left": [1, 2], "name_left": ["foo", "bar"]})
+right = pd.DataFrame(
+   {"id_right": [3, 4, 5, 6], "name_right": ["baz", "bear", "fool", "food"]})
 
-merged = fuzz_merge(left, right, left_on="name", right_on="name", score_cutoff=70)
+merged = fuzz_merge(left, right, left_on="name_left",
+                  right_on="name_right", score_cutoff=70)
+
 print(merged)
+```
+
+**Output:**
+
+```
+   id_right name_right  id_left name_left  left_index  right_index      score
+2         4       bear        2       bar           1            1  85.714287
+0         5       fool        1       foo           0            2  85.714287
+1         6       food        1       foo           0            3  85.714287
 ```
 
 ## Building
