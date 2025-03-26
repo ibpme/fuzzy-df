@@ -1,0 +1,12 @@
+[project]
+name = "fuzzy-df"
+version = "0.1.0"
+description = "Fuzzy merging and matching utilities for pandas Dataframes."
+readme = "README.md"
+authors = [{ name = "Iman-Budi Pranakasih", email = "ibpranakasih@gmail.com" }]
+requires-python = ">=3.13"
+dependencies = ["pandas>=2.2.3", "rapidfuzz>=3.12.2"]
+license-files = ["LICENSE"]
+
+[project.scripts]
+fuzzy-df = "fuzzy_df:main"
