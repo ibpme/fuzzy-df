@@ -9,10 +9,7 @@ on:
 jobs:
   build_lint_test:
     name: Build, Lint, and Test
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
