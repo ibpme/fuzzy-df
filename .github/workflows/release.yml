@@ -3,9 +3,7 @@ name: release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+a[0-9]+"
-      - "[0-9]+.[0-9]+.[0-9]+b[0-9]+"
-      - "[0-9]+.[0-9]+.[0-9]+rc[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 env:
   PACKAGE_NAME: "fuzzy-df"
@@ -45,7 +43,7 @@ jobs:
     steps:
       - name: Fetch information from PyPI
         run: |
-          response=$(curl -s https://test.pypi.org/pypi/${{ env.PACKAGE_NAME }}/json || echo "{}")
+          response=$(curl -s https://pypi.org/pypi/${{ env.PACKAGE_NAME }}/json || echo "{}")
           latest_previous_version=$(echo $response | jq --raw-output "select(.releases != null) | .releases | keys_unsorted | last")
           if [ -z "$latest_previous_version" ]; then
             echo "Package not found on PyPI."
@@ -69,7 +67,7 @@ jobs:
     needs: [details, check_pypi]
     runs-on: ubuntu-latest
     environment:
-      name: staging
+      name: release
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -94,7 +92,7 @@ jobs:
     needs: [setup_and_build, details]
     runs-on: ubuntu-latest
     environment:
-      name: staging
+      name: release
     permissions:
       id-token: write
     steps:
@@ -106,14 +104,12 @@ jobs:
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
 
   github_release:
     name: Create GitHub Release
     needs: [setup_and_build, details]
     environment:
-      name: staging
+      name: release
     runs-on: ubuntu-latest
     permissions:
       contents: write
