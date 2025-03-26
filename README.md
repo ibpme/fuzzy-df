@@ -101,6 +101,24 @@ Replace `<version>` with the actual version number of the package.
 
 For more information on `uv`, refer to its [documentation](https://github.com/ultraviolet/uv).
 
+## Testing
+
+To run tests, follow these steps:
+
+1. **Install the package in editable mode**:
+
+   ```bash
+   uv pip install -e .
+   ```
+
+2. **Run the test suite using `pytest`**:
+
+   ```bash
+   uv run pytest
+   ```
+
+This will execute all the tests and display the results in the terminal.
+
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests on the [GitHub repository](https://github.com/ibpme/fuzzy-df).
