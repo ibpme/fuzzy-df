@@ -16,5 +16,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 
+[project.urls]
+Homepage = "https://github.com/ibpme/fuzzy-df"
+Repository = "https://github.com/ibpme/fuzzy-df"
+Issues = "https://github.com/ibpme/fuzzy-df/issues"
+
 [dependency-groups]
 dev = ["pytest>=8.3.5", "ruff>=0.11.2"]
