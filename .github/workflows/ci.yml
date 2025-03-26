@@ -7,14 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build_and_test:
     name: continuous-integration
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest, mac-latest, windows-latest]
-  test:
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
