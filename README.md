@@ -77,7 +77,13 @@ print(merged)
 
 To build the project using `uv`, follow these steps:
 
-1. **Run the build command**: Navigate to the project directory and execute the following command:
+1. **Setup python version**: Overide the .python-version to test out on supported python version `>=3.10`:
+
+   ```bash
+   echo 3.13 > .python-version
+   ```
+
+2. **Run the build command**: Navigate to the project directory and execute the following command:
 
    ```bash
    uv build
@@ -85,13 +91,13 @@ To build the project using `uv`, follow these steps:
 
    This will package the project and prepare it for distribution.
 
-2. **Verify the build**: After the build process completes, you should see the generated distribution files in the `dist/` directory. You can verify them by listing the contents:
+3. **Verify the build**: After the build process completes, you should see the generated distribution files in the `dist/` directory. You can verify them by listing the contents:
 
    ```bash
    ls dist/
    ```
 
-3. **Install the built package locally** (optional): To test the built package, you can install it locally using pip:
+4. **Install the built package locally** (optional): To test the built package, you can install it locally using pip:
 
    ```bash
    pip install dist/fuzzy_df-<version>.tar.gz
