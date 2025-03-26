@@ -69,6 +69,8 @@ jobs:
   setup_and_build:
     needs: [details, check_pypi]
     runs-on: ubuntu-latest
+    environment:
+      name: staging
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -111,6 +113,8 @@ jobs:
   github_release:
     name: Create GitHub Release
     needs: [setup_and_build, details]
+    environment:
+      name: staging
     runs-on: ubuntu-latest
     permissions:
       contents: write
