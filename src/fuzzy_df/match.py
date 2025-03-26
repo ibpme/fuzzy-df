@@ -1,6 +1,6 @@
+import numpy as np
 import pandas as pd
 from rapidfuzz import process
-import numpy as np
 
 
 def fuzz_match(comp_left: pd.Series, comp_right: pd.Series, score_col='score', score_cutoff=80):
