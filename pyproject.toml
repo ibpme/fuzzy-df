@@ -4,14 +4,17 @@ version = "0.1.0"
 description = "Fuzzy merging and matching utilities for pandas Dataframes."
 readme = "README.md"
 authors = [{ name = "Iman-Budi Pranakasih", email = "ibpranakasih@gmail.com" }]
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = ["pandas>=2.2.3", "rapidfuzz>=3.12.2"]
-license-files = ["LICENSE"]
+license = "MIT"
 keywords = ["fuzzy", "pandas", "dataframe", "matching", "merging"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
