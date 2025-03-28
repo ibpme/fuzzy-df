@@ -1,6 +1,6 @@
 [project]
 name = "fuzzy-df"
-version = "0.1.1"
+version = "0.2.0"
 description = "Fuzzy merging and matching utilities for pandas Dataframes."
 readme = "README.md"
 authors = [{ name = "Iman-Budi Pranakasih", email = "ibpranakasih@gmail.com" }]
