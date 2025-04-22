@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Literal
 
 import pandas as pd
 from pandas._typing import AnyArrayLike, IndexLabel, MergeHow
@@ -17,6 +17,8 @@ def fuzz_merge(
     score_col="score",
     scorer: Callable = _default_config["scorer"],
     score_cutoff: Optional[Any] = _default_config["score_cutoff"],
+    drop_index: bool = False,
+    strategy: Optional[Literal["combine"]] = None,
     **fuzz_kwargs,
 ):
     """
@@ -70,11 +72,38 @@ def fuzz_merge(
     left_on = left_on if left_on is not None else on
     right_on = right_on if right_on is not None else on
     if left_on is None or right_on is None:
-        raise ValueError("on, left_on and right_on are required")
-    if isinstance(left_on, list):
-        raise NotImplementedError("Multiple columns not supported yet")
-    if isinstance(right_on, list):
-        raise NotImplementedError("Multiple columns not supported yet")
+        raise ValueError("Argument 'on' or ('left_on' and 'right_on') are required")
+    is_multiple = any(
+        [isinstance(on, list), isinstance(left_on, list), isinstance(right_on, list)]
+    )
+    if is_multiple:
+        # Set default strategy to combine
+        strategy = strategy if strategy is not None else "combine"
+        both_left_right_multiple = isinstance(left_on, list) and isinstance(
+            right_on, list
+        )
+        if not both_left_right_multiple:
+            raise ValueError(
+                "Both left_on and right_on must be list if one of them is list"
+            )
+        if strategy == "combine":
+            # Recursively call reduce the DataFrame to a single column
+            return fuzz_merge_multiple_combine(
+                left,
+                right,
+                how=how,
+                on=on,
+                left_on=left_on,
+                right_on=right_on,
+                score_col=score_col,
+                scorer=scorer,
+                score_cutoff=score_cutoff,
+                drop_index=drop_index,
+                **fuzz_kwargs,
+            )
+        raise NotImplementedError(
+            "Multiple columns for this config is not supported yet"
+        )
 
     comp_left = left[left_on].astype(str)
     comp_right = right[right_on].astype(str)
@@ -104,4 +133,49 @@ def fuzz_merge(
         right_on="right_index",
         how=how,
     )
+    if drop_index:
+        matched_df = matched_df.drop(columns=["left_index", "right_index"])
     return matched_df
+
+
+def fuzz_merge_multiple_combine(
+    left: pd.DataFrame | pd.Series,
+    right: pd.DataFrame | pd.Series,
+    how: MergeHow = "inner",
+    on: IndexLabel | AnyArrayLike | None = None,
+    left_on: IndexLabel | AnyArrayLike | None = None,
+    right_on: IndexLabel | AnyArrayLike | None = None,
+    score_col="score",
+    scorer: Callable = _default_config["scorer"],
+    score_cutoff: Optional[Any] = _default_config["score_cutoff"],
+    drop_index: bool = False,
+    **fuzz_kwargs,
+):
+    # Careful with nan
+    # Order matters
+    left_colname = "_".join(left_on)
+    right_colname = "_".join(right_on)
+    left[left_colname] = (
+        left[left_on].astype(str).agg(" ".join, axis=1).to_frame(left_colname)
+    )
+    right[right_colname] = (
+        right[right_on].astype(str).agg(" ".join, axis=1).to_frame(right_colname)
+    )
+    result = fuzz_merge(
+        left,
+        right,
+        how=how,
+        on=on,
+        left_on=left_colname,
+        right_on=right_colname,
+        score_col=score_col,
+        scorer=scorer,
+        score_cutoff=score_cutoff,
+        drop_index=drop_index,
+        **fuzz_kwargs,
+    )
+    if len(left_on) == 1:
+        return result.drop(columns=[right_colname])
+    if len(right_on) == 1:
+        return result.drop(columns=[left_colname])
+    return result.drop(columns=[left_colname, right_colname])
