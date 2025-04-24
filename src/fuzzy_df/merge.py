@@ -20,7 +20,7 @@ def fuzz_merge(
     scorer: Callable = _default_config["scorer"],
     score_cutoff: Optional[Any] = _default_config["score_cutoff"],
     drop_index: bool = False,
-    strategy: Optional[Literal["combine", "aggregate", "hierarchical"]] = None,
+    strategy: Optional[Literal["combine", "aggregate"]] = None,
     aggregate_func=np.mean,
     **fuzz_kwargs,
 ):
@@ -42,7 +42,7 @@ def fuzz_merge(
         score_cutoff (int, optional): The minimum similarity score required to consider a match.
         drop_index (bool, optional): Whether to drop index columns in the result. Defaults to False.
         strategy (str, optional): Strategy for handling multiple columns. Options are
-            "combine", "aggregate", or "hierarchical". Defaults to "combine".
+            "combine", "aggregate". Defaults to "combine".
         **fuzz_kwargs : Additional support same keyword arguments as `rapidfuzz.process`.
             https://rapidfuzz.github.io/RapidFuzz/Usage/process.html#rapidfuzz.process
 
@@ -90,12 +90,6 @@ def fuzz_merge(
 
     # Set default strategy to combine
     strategy = strategy if strategy is not None else "combine"
-
-    if is_multiple and strategy == "hierarchical":
-        # Continue to matched df merge logic
-        raise NotImplementedError(
-            "Multiple columns for this config is not supported yet"
-        )
 
     # Setup Configs
     fuzz_config = _default_config
