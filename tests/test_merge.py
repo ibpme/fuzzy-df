@@ -226,4 +226,41 @@ def test_fuzz_merge_multiple_columns_one_side_list_error():
             right_on="full_name",
         )
     except ValueError as e:
-        assert str(e) == "Both left_on and right_on must be list if one of them is list"
+        assert str(e) == "left_on and right_on must be either both list or or both str"
+
+
+def test_fuzz_merge_aggregate_strategy():
+    left = pd.DataFrame(
+        {
+            "first_name": ["John", "Jane"],
+            "last_name": ["Doe", "Smith"],
+        }
+    )
+    right = pd.DataFrame(
+        {
+            "first_name": ["John", "Paul"],
+            "last_name": ["Doe", "Smith"],
+        }
+    )
+
+    result = fuzz_merge(
+        left,
+        right,
+        left_on=["first_name", "last_name"],
+        right_on=["first_name", "last_name"],
+        strategy="aggregate",
+    )
+
+    expected = pd.DataFrame(
+        {
+            "first_name_x": ["John", "Paul"],
+            "last_name_x": ["Doe", "Smith"],
+            "first_name_y": ["John", "Jane"],
+            "last_name_y": ["Doe", "Smith"],
+            "left_index": [0, 1],
+            "right_index": [0, 1],
+            "score": [100.0, 62.5],
+        }
+    )
+
+    pd.testing.assert_frame_equal(result.reset_index(drop=True), expected)
