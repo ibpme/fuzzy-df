@@ -140,11 +140,13 @@ def fuzz_merge(
             ),
         )
         score_columns = [col for col in agg_matched_df.columns if "_agg_score" in col]
-        agg_matched_df["score"] = aggregate_func(agg_matched_df[score_columns], axis=1)
+        agg_matched_df[score_col] = aggregate_func(
+            agg_matched_df[score_columns], axis=1
+        )
         agg_matched_df = agg_matched_df.drop(columns=score_columns)
         # Drop score less than score_cutoff
         if score_cutoff is not None:
-            agg_matched_df = agg_matched_df[agg_matched_df["score"] >= score_cutoff]
+            agg_matched_df = agg_matched_df[agg_matched_df[score_col] >= score_cutoff]
         matched_df = agg_matched_df
     else:
         matched_df = fuzz_match(comp_left, comp_right, score_col, **fuzz_config)
